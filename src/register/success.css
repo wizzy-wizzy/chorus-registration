@@ -1,0 +1,319 @@
+/* =========================================================
+   CHORUS 2026 — SUCCESS PAGE
+========================================================= */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+
+body {
+
+  font-family: Arial, Helvetica, sans-serif;
+
+  background: #080808;
+
+  color: #fff;
+
+  min-height: 100vh;
+
+}
+
+
+.success-page {
+
+  min-height: 100vh;
+
+  padding: 30px 6vw;
+
+}
+
+
+.success-nav {
+
+  display: flex;
+
+  justify-content: space-between;
+
+  align-items: center;
+
+}
+
+
+.logo {
+
+  color: #fff;
+
+  text-decoration: none;
+
+  font-size: 1.1rem;
+
+  font-weight: 800;
+
+  letter-spacing: -0.04em;
+
+}
+
+
+.logo span {
+
+  opacity: .45;
+
+  margin-left: 4px;
+
+}
+
+
+.success-container {
+
+  max-width: 760px;
+
+  margin: 120px auto;
+
+  text-align: center;
+
+}
+
+
+.success-icon {
+
+  width: 72px;
+
+  height: 72px;
+
+  margin: 0 auto 30px;
+
+  display: grid;
+
+  place-items: center;
+
+  border: 1px solid rgba(255,255,255,.2);
+
+  border-radius: 50%;
+
+  font-size: 1.7rem;
+
+}
+
+
+.eyebrow {
+
+  font-size: .72rem;
+
+  letter-spacing: .22em;
+
+  opacity: .55;
+
+  margin-bottom: 20px;
+
+}
+
+
+h1 {
+
+  font-size: clamp(4rem, 10vw, 8rem);
+
+  line-height: .85;
+
+  letter-spacing: -.07em;
+
+}
+
+
+h1 span {
+
+  display: block;
+
+  opacity: .35;
+
+}
+
+
+.success-message {
+
+  max-width: 500px;
+
+  margin: 35px auto;
+
+  line-height: 1.7;
+
+  opacity: .6;
+
+}
+
+
+.registration-card {
+
+  margin: 50px auto 25px;
+
+  padding: 25px;
+
+  max-width: 420px;
+
+  border: 1px solid rgba(255,255,255,.12);
+
+  background: rgba(255,255,255,.03);
+
+}
+
+
+.registration-card span {
+
+  display: block;
+
+  font-size: .65rem;
+
+  letter-spacing: .2em;
+
+  opacity: .4;
+
+  margin-bottom: 10px;
+
+}
+
+
+.registration-card strong {
+
+  font-size: 1.3rem;
+
+  letter-spacing: .08em;
+
+}
+
+
+.event-details {
+
+  display: flex;
+
+  justify-content: center;
+
+  gap: 60px;
+
+  margin: 35px 0;
+
+}
+
+
+.event-details div {
+
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 8px;
+
+}
+
+
+.event-details small {
+
+  font-size: .6rem;
+
+  letter-spacing: .2em;
+
+  opacity: .4;
+
+}
+
+
+.event-details strong {
+
+  font-size: .75rem;
+
+}
+
+
+.success-actions {
+
+  display: flex;
+
+  justify-content: center;
+
+  gap: 12px;
+
+  flex-wrap: wrap;
+
+}
+
+
+.primary-button,
+.secondary-button {
+
+  border: none;
+
+  padding: 15px 22px;
+
+  text-decoration: none;
+
+  cursor: pointer;
+
+  font-size: .8rem;
+
+}
+
+
+.primary-button {
+
+  background: #fff;
+
+  color: #000;
+
+}
+
+
+.primary-button span {
+
+  margin-left: 12px;
+
+}
+
+
+.secondary-button {
+
+  background: transparent;
+
+  color: #fff;
+
+  border: 1px solid rgba(255,255,255,.2);
+
+}
+
+
+.copy-message {
+
+  margin-top: 15px;
+
+  font-size: .75rem;
+
+  opacity: .5;
+
+}
+
+
+@media (max-width: 600px) {
+
+  .success-page {
+
+    padding: 25px;
+
+  }
+
+
+  .success-container {
+
+    margin: 90px auto;
+
+  }
+
+
+  .event-details {
+
+    flex-direction: column;
+
+    gap: 20px;
+
+  }
+
+}

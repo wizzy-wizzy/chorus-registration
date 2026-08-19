@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <meta
+    name="description"
+    content="CHORUS 2026 Admin Dashboard"
+  >
+
+  <title>Dashboard — CHORUS 2026</title>
+
+  <link
+    rel="stylesheet"
+    href="./dashboard.css"
+  >
+
+</head>
+
+
+<body>
+
+  <main class="dashboard-page">
+
+    <!-- ================================================
+         NAVIGATION
+    ================================================= -->
+
+    <nav class="dashboard-nav">
+
+      <a href="/" class="logo">
+        CHORUS<span>2026</span>
+      </a>
+
+
+      <div class="nav-right">
+
+        <span class="admin-status">
+          ● ADMIN
+        </span>
+
+        <button
+          id="logout-button"
+          class="logout-button"
+        >
+          Logout
+        </button>
+
+      </div>
+
+    </nav>
+
+
+    <!-- ================================================
+         HEADER
+    ================================================= -->
+
+    <header class="dashboard-header">
+
+      <div>
+
+        <p class="eyebrow">
+          CHORUS 2026
+        </p>
+
+        <h1>
+          Admin
+          <span>Dashboard.</span>
+        </h1>
+
+        <p class="dashboard-description">
+          Manage registrations and keep track of
+          everyone joining the CHORUS 2026 experience.
+        </p>
+
+      </div>
+
+
+      <button
+        id="refresh-button"
+        class="refresh-button"
+      >
+        ↻ Refresh
+      </button>
+
+    </header>
+
+
+    <!-- ================================================
+         STATISTICS
+    ================================================= -->
+
+    <section class="stats-grid">
+
+
+      <article class="stat-card">
+
+        <span class="stat-label">
+          TOTAL REGISTRATIONS
+        </span>
+
+        <strong
+          id="total-registrations"
+          class="stat-number"
+        >
+          —
+        </strong>
+
+        <span class="stat-description">
+          All registered attendees
+        </span>
+
+      </article>
+
+
+      <article class="stat-card">
+
+        <span class="stat-label">
+          TODAY
+        </span>
+
+        <strong
+          id="today-registrations"
+          class="stat-number"
+        >
+          —
+        </strong>
+
+        <span class="stat-description">
+          Registrations today
+        </span>
+
+      </article>
+
+
+      <article class="stat-card">
+
+        <span class="stat-label">
+          PEOPLE ATTENDING
+        </span>
+
+        <strong
+          id="total-attendees"
+          class="stat-number"
+        >
+          —
+        </strong>
+
+        <span class="stat-description">
+          Including group attendees
+        </span>
+
+      </article>
+
+
+      <article class="stat-card">
+
+        <span class="stat-label">
+          GROUP REGISTRATIONS
+        </span>
+
+        <strong
+          id="group-registrations"
+          class="stat-number"
+        >
+          —
+        </strong>
+
+        <span class="stat-description">
+          People attending with groups
+        </span>
+
+      </article>
+
+    </section>
+
+
+    <!-- ================================================
+         ATTENDEES
+    ================================================= -->
+
+    <section class="attendees-section">
+
+      <div class="section-header">
+
+        <div>
+
+          <p class="section-label">
+            REGISTRATIONS
+          </p>
+
+          <h2>
+            Attendees
+          </h2>
+
+        </div>
+
+
+        <button
+          id="export-button"
+          class="export-button"
+        >
+          ↓ Export CSV
+        </button>
+
+      </div>
+
+
+      <!-- SEARCH -->
+
+      <div class="search-container">
+
+        <span class="search-icon">
+          ⌕
+        </span>
+
+        <input
+          type="search"
+          id="search-input"
+          placeholder="Search by name, registration ID, phone, email, city..."
+          autocomplete="off"
+        >
+
+        <button
+          id="clear-search"
+          class="clear-search"
+          type="button"
+        >
+          ×
+        </button>
+
+      </div>
+
+
+      <!-- TABLE -->
+
+      <div class="table-wrapper">
+
+        <table>
+
+          <thead>
+
+            <tr>
+
+              <th>
+                REGISTRATION ID
+              </th>
+
+              <th>
+                NAME
+              </th>
+
+              <th>
+                PHONE
+              </th>
+
+              <th>
+                CITY
+              </th>
+
+              <th>
+                ATTENDING
+              </th>
+
+              <th>
+                DATE
+              </th>
+
+              <th>
+                ACTION
+              </th>
+
+            </tr>
+
+          </thead>
+
+
+          <tbody id="registrations-table">
+
+            <tr>
+
+              <td
+                colspan="7"
+                class="loading-cell"
+              >
+                Loading registrations...
+              </td>
+
+            </tr>
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+
+      <!-- EMPTY STATE -->
+
+      <div
+        id="empty-state"
+        class="empty-state hidden"
+      >
+
+        <div class="empty-icon">
+          ◌
+        </div>
+
+        <h3>
+          No registrations found
+        </h3>
+
+        <p>
+          Try changing your search or refresh the dashboard.
+        </p>
+
+      </div>
+
+
+    </section>
+
+
+    <!-- ================================================
+         ATTENDEE MODAL
+    ================================================= -->
+
+    <div
+      id="attendee-modal"
+      class="modal"
+      aria-hidden="true"
+    >
+
+      <div
+        class="modal-overlay"
+        id="modal-overlay"
+      ></div>
+
+
+      <div class="modal-card">
+
+        <button
+          id="close-modal"
+          class="close-modal"
+          type="button"
+        >
+          ×
+        </button>
+
+
+        <p class="eyebrow">
+          REGISTRATION DETAILS
+        </p>
+
+
+        <h2 id="modal-name">
+          Attendee
+        </h2>
+
+
+        <div class="modal-registration-id">
+
+          <span>
+            REGISTRATION ID
+          </span>
+
+          <strong id="modal-registration-id">
+            —
+          </strong>
+
+        </div>
+
+
+        <div class="details-grid">
+
+
+          <div class="detail">
+
+            <span>
+              WHATSAPP
+            </span>
+
+            <strong id="modal-phone">
+              —
+            </strong>
+
+          </div>
+
+
+          <div class="detail">
+
+            <span>
+              EMAIL
+            </span>
+
+            <strong id="modal-email">
+              —
+            </strong>
+
+          </div>
+
+
+          <div class="detail">
+
+            <span>
+              GENDER
+            </span>
+
+            <strong id="modal-gender">
+              —
+            </strong>
+
+          </div>
+
+
+          <div class="detail">
+
+            <span>
+              CITY
+            </span>
+
+            <strong id="modal-city">
+              —
+            </strong>
+
+          </div>
+
+
+          <div class="detail">
+
+            <span>
+              CHURCH / ORGANIZATION
+            </span>
+
+            <strong id="modal-church">
+              —
+            </strong>
+
+          </div>
+
+
+          <div class="detail">
+
+            <span>
+              ATTENDING WITH
+            </span>
+
+            <strong id="modal-attendance">
+              —
+            </strong>
+
+          </div>
+
+
+          <div class="detail">
+
+            <span>
+              GROUP SIZE
+            </span>
+
+            <strong id="modal-group-size">
+              —
+            </strong>
+
+          </div>
+
+
+          <div class="detail">
+
+            <span>
+              SOURCE
+            </span>
+
+            <strong id="modal-source">
+              —
+            </strong>
+
+          </div>
+
+
+        </div>
+
+
+        <div class="modal-message">
+
+          <span>
+            MESSAGE
+          </span>
+
+          <p id="modal-message">
+            —
+          </p>
+
+        </div>
+
+
+        <div class="modal-date">
+
+          <span>
+            REGISTERED
+          </span>
+
+          <strong id="modal-date">
+            —
+          </strong>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- ================================================
+         TOAST
+    ================================================= -->
+
+    <div
+      id="toast"
+      class="toast"
+    >
+      <span id="toast-message"></span>
+    </div>
+
+
+  </main>
+
+
+  <script
+    type="module"
+    src="./dashboard.js"
+  ></script>
+
+</body>
+
+</html>

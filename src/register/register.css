@@ -1,0 +1,415 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --bg: #080808;
+  --card: #111111;
+  --border: rgba(255, 255, 255, 0.1);
+  --muted: rgba(255, 255, 255, 0.45);
+  --soft: rgba(255, 255, 255, 0.7);
+  --white: #ffffff;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: Inter, Arial, sans-serif;
+  background: var(--bg);
+  color: var(--white);
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+
+/* =========================
+   PAGE
+========================= */
+
+.registration-page {
+  min-height: 100vh;
+  padding: 30px 6vw 100px;
+}
+
+
+/* =========================
+   NAV
+========================= */
+
+.registration-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo {
+  font-size: 1.1rem;
+  font-weight: 900;
+  letter-spacing: -0.04em;
+}
+
+.logo span {
+  opacity: 0.4;
+  margin-left: 4px;
+}
+
+.back-link {
+  color: var(--muted);
+  font-size: 0.85rem;
+  transition: 0.3s ease;
+}
+
+.back-link:hover {
+  color: white;
+}
+
+
+/* =========================
+   WRAPPER
+========================= */
+
+.registration-wrapper {
+  width: min(1100px, 100%);
+  margin: 100px auto 0;
+
+  display: grid;
+  grid-template-columns: 0.8fr 1.2fr;
+
+  gap: 100px;
+}
+
+
+/* =========================
+   INTRO
+========================= */
+
+.registration-intro {
+  position: sticky;
+  top: 50px;
+  align-self: start;
+}
+
+.eyebrow {
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  color: var(--muted);
+  margin-bottom: 25px;
+}
+
+.registration-intro h1 {
+  font-size: clamp(4rem, 7vw, 7rem);
+  line-height: 0.85;
+  letter-spacing: -0.07em;
+}
+
+.registration-intro h1 span {
+  display: block;
+  opacity: 0.35;
+}
+
+.intro-text {
+  max-width: 400px;
+  margin-top: 35px;
+  color: var(--muted);
+  line-height: 1.8;
+}
+
+.event-info {
+  margin-top: 70px;
+  display: grid;
+  gap: 25px;
+}
+
+.event-info div {
+  display: grid;
+  gap: 8px;
+}
+
+.event-info small {
+  font-size: 0.6rem;
+  letter-spacing: 0.15em;
+  color: var(--muted);
+}
+
+.event-info strong {
+  font-size: 0.8rem;
+}
+
+
+/* =========================
+   FORM
+========================= */
+
+.registration-form {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 25px;
+  padding: 45px;
+}
+
+.form-section {
+  padding-bottom: 45px;
+  margin-bottom: 45px;
+  border-bottom: 1px solid var(--border);
+}
+
+.form-section-title {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+
+  font-size: 0.85rem;
+  font-weight: 700;
+
+  margin-bottom: 35px;
+}
+
+.form-section-title span {
+  color: var(--muted);
+  font-size: 0.65rem;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 25px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.field.full {
+  grid-column: 1 / -1;
+}
+
+.field label {
+  font-size: 0.7rem;
+  font-weight: 600;
+}
+
+.field label span {
+  color: var(--muted);
+  font-weight: 400;
+  margin-left: 5px;
+}
+
+.field input,
+.field select,
+.field textarea {
+  width: 100%;
+
+  background: #080808;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+
+  color: white;
+
+  padding: 15px;
+
+  outline: none;
+
+  transition: 0.3s ease;
+}
+
+.field textarea {
+  resize: vertical;
+}
+
+.field input::placeholder,
+.field textarea::placeholder {
+  color: rgba(255, 255, 255, 0.25);
+}
+
+.field input:focus,
+.field select:focus,
+.field textarea:focus {
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
+
+/* =========================
+   CONSENT
+========================= */
+
+.form-consent {
+  margin-bottom: 25px;
+}
+
+.checkbox {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+
+  font-size: 0.7rem;
+  line-height: 1.6;
+
+  color: var(--muted);
+
+  cursor: pointer;
+}
+
+.checkbox input {
+  margin-top: 3px;
+}
+
+
+/* =========================
+   BUTTON
+========================= */
+
+.submit-button {
+  width: 100%;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 18px 22px;
+
+  border: none;
+  border-radius: 100px;
+
+  background: white;
+  color: black;
+
+  cursor: pointer;
+
+  font-weight: 700;
+
+  transition: 0.3s ease;
+}
+
+.submit-button:hover {
+  transform: translateY(-3px);
+}
+
+.submit-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.form-note {
+  text-align: center;
+
+  margin-top: 20px;
+
+  font-size: 0.65rem;
+
+  color: var(--muted);
+
+  line-height: 1.6;
+}
+
+
+/* =========================
+   MOBILE
+========================= */
+
+@media (max-width: 850px) {
+
+  .registration-wrapper {
+    grid-template-columns: 1fr;
+    gap: 60px;
+    margin-top: 70px;
+  }
+
+  .registration-intro {
+    position: static;
+  }
+
+  .event-info {
+    margin-top: 40px;
+  }
+
+}
+
+
+@media (max-width: 600px) {
+
+  .registration-page {
+    padding: 25px 20px 70px;
+  }
+
+  .registration-intro h1 {
+    font-size: 4rem;
+  }
+
+  .registration-form {
+    padding: 25px 20px;
+    border-radius: 20px;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .field.full {
+    grid-column: auto;
+  }
+
+}
+
+/* =========================================================
+   GSAP PERFORMANCE
+========================================================= */
+
+.hero-title,
+.hero-eyebrow,
+.hero-description,
+.hero-button,
+.hero-footer,
+.navbar,
+.scroll-indicator {
+  will-change: transform, opacity;
+}
+
+/* =========================================================
+   GSAP PERFORMANCE
+========================================================= */
+
+.registration-nav,
+.registration-intro,
+.registration-form,
+.registration-intro .eyebrow,
+.registration-intro h1,
+.intro-text,
+.event-info > div,
+.form-section,
+.form-consent,
+.submit-button,
+.form-note {
+  will-change: transform, opacity;
+}
+
+
+/* =========================================================
+   SMOOTH FORM INTERACTION
+========================================================= */
+
+.field input,
+.field select,
+.field textarea,
+.submit-button,
+.back-link,
+.logo {
+  will-change: transform;
+}

@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <meta
+    name="description"
+    content="CHORUS 2026 Admin Portal"
+  >
+
+  <title>Admin — CHORUS 2026</title>
+
+  <link
+    rel="stylesheet"
+    href="./admin.css"
+  >
+</head>
+
+<body>
+
+  <main class="admin-page">
+
+    <div class="admin-glow"></div>
+
+    <nav class="admin-nav">
+
+      <a href="/" class="logo">
+        CHORUS<span>2026</span>
+      </a>
+
+      <span class="admin-label">
+        ADMIN PORTAL
+      </span>
+
+    </nav>
+
+
+    <section class="login-wrapper">
+
+      <div class="login-card">
+
+        <div class="login-icon">
+          🔐
+        </div>
+
+        <p class="eyebrow">
+          CHORUS 2026
+        </p>
+
+        <h1>
+          Welcome
+          <span>back.</span>
+        </h1>
+
+        <p class="login-description">
+          Sign in to manage CHORUS 2026
+          registrations and attendees.
+        </p>
+
+
+        <form id="admin-login-form">
+
+          <div class="field">
+
+            <label for="email">
+              Email Address
+            </label>
+
+            <input
+              type="email"
+              id="email"
+              placeholder="admin@example.com"
+              autocomplete="email"
+              required
+            >
+
+          </div>
+
+
+          <div class="field">
+
+            <label for="password">
+              Password
+            </label>
+
+            <input
+              type="password"
+              id="password"
+              placeholder="Enter your password"
+              autocomplete="current-password"
+              required
+            >
+
+          </div>
+
+
+          <p
+            class="login-error"
+            id="login-error"
+          ></p>
+
+
+          <button
+            type="submit"
+            class="login-button"
+            id="login-button"
+          >
+
+            <span id="login-button-text">
+              Sign In
+            </span>
+
+            <span>
+              →
+            </span>
+
+          </button>
+
+        </form>
+
+
+        <div class="security-note">
+
+          <span>🔒</span>
+
+          <p>
+            This area is restricted to
+            authorized CHORUS administrators.
+          </p>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <footer class="admin-footer">
+      CHORUS 2026 · ADMINISTRATION
+    </footer>
+
+  </main>
+
+
+  <script
+    type="module"
+    src="./admin.js"
+  ></script>
+
+</body>
+
+</html>

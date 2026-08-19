@@ -1,0 +1,492 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+
+/* =========================================================
+   RESET
+========================================================= */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+
+html {
+  scroll-behavior: smooth;
+}
+
+
+body {
+
+  font-family: 'Inter', sans-serif;
+
+  background: #080808;
+
+  color: #fff;
+
+  min-height: 100vh;
+
+}
+
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+
+button,
+input {
+  font: inherit;
+}
+
+
+/* =========================================================
+   PAGE
+========================================================= */
+
+.admin-page {
+
+  min-height: 100vh;
+
+  position: relative;
+
+  display: flex;
+
+  flex-direction: column;
+
+  padding: 30px 6vw;
+
+  overflow: hidden;
+
+}
+
+
+.admin-glow {
+
+  position: fixed;
+
+  width: 500px;
+
+  height: 500px;
+
+  top: 20%;
+
+  left: 50%;
+
+  transform: translateX(-50%);
+
+  background:
+    radial-gradient(
+      circle,
+      rgba(255,255,255,.055),
+      transparent 70%
+    );
+
+  pointer-events: none;
+
+}
+
+
+/* =========================================================
+   NAVIGATION
+========================================================= */
+
+.admin-nav {
+
+  width: 100%;
+
+  display: flex;
+
+  justify-content: space-between;
+
+  align-items: center;
+
+}
+
+
+.logo {
+
+  font-size: 1.1rem;
+
+  font-weight: 900;
+
+  letter-spacing: -.04em;
+
+}
+
+
+.logo span {
+
+  opacity: .4;
+
+  margin-left: 4px;
+
+}
+
+
+.admin-label {
+
+  font-size: .6rem;
+
+  letter-spacing: .2em;
+
+  opacity: .4;
+
+}
+
+
+/* =========================================================
+   LOGIN
+========================================================= */
+
+.login-wrapper {
+
+  width: 100%;
+
+  flex: 1;
+
+  display: grid;
+
+  place-items: center;
+
+  padding: 80px 0;
+
+}
+
+
+.login-card {
+
+  width: 100%;
+
+  max-width: 500px;
+
+  padding: 55px;
+
+  border: 1px solid rgba(255,255,255,.1);
+
+  border-radius: 28px;
+
+  background:
+    rgba(255,255,255,.025);
+
+  backdrop-filter: blur(20px);
+
+  box-shadow:
+    0 30px 100px rgba(0,0,0,.35);
+
+}
+
+
+.login-icon {
+
+  width: 54px;
+
+  height: 54px;
+
+  display: grid;
+
+  place-items: center;
+
+  border: 1px solid rgba(255,255,255,.12);
+
+  border-radius: 50%;
+
+  margin-bottom: 28px;
+
+  font-size: 1.2rem;
+
+}
+
+
+.eyebrow {
+
+  font-size: .65rem;
+
+  font-weight: 700;
+
+  letter-spacing: .2em;
+
+  opacity: .45;
+
+  margin-bottom: 20px;
+
+}
+
+
+h1 {
+
+  font-size: clamp(3.5rem, 9vw, 6rem);
+
+  line-height: .85;
+
+  letter-spacing: -.07em;
+
+}
+
+
+h1 span {
+
+  display: block;
+
+  opacity: .3;
+
+}
+
+
+.login-description {
+
+  max-width: 390px;
+
+  margin: 30px 0 45px;
+
+  color: rgba(255,255,255,.5);
+
+  line-height: 1.7;
+
+  font-size: .9rem;
+
+}
+
+
+/* =========================================================
+   FORM
+========================================================= */
+
+.field {
+
+  margin-bottom: 22px;
+
+}
+
+
+.field label {
+
+  display: block;
+
+  margin-bottom: 9px;
+
+  font-size: .65rem;
+
+  font-weight: 600;
+
+  letter-spacing: .08em;
+
+  text-transform: uppercase;
+
+  opacity: .5;
+
+}
+
+
+.field input {
+
+  width: 100%;
+
+  padding: 17px 18px;
+
+  border-radius: 12px;
+
+  border: 1px solid rgba(255,255,255,.12);
+
+  background: rgba(255,255,255,.04);
+
+  color: white;
+
+  outline: none;
+
+  transition: .3s ease;
+
+}
+
+
+.field input::placeholder {
+
+  color: rgba(255,255,255,.25);
+
+}
+
+
+.field input:focus {
+
+  border-color: rgba(255,255,255,.45);
+
+  background: rgba(255,255,255,.06);
+
+  transform: translateY(-2px);
+
+}
+
+
+/* =========================================================
+   ERROR
+========================================================= */
+
+.login-error {
+
+  min-height: 20px;
+
+  margin: 8px 0 15px;
+
+  color: #ff7777;
+
+  font-size: .75rem;
+
+  line-height: 1.5;
+
+}
+
+
+/* =========================================================
+   BUTTON
+========================================================= */
+
+.login-button {
+
+  width: 100%;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  padding: 17px 20px;
+
+  border: none;
+
+  border-radius: 12px;
+
+  background: #fff;
+
+  color: #000;
+
+  cursor: pointer;
+
+  font-weight: 700;
+
+  transition: .3s ease;
+
+}
+
+
+.login-button:hover {
+
+  transform: translateY(-3px);
+
+}
+
+
+.login-button:disabled {
+
+  opacity: .5;
+
+  cursor: not-allowed;
+
+  transform: none;
+
+}
+
+
+/* =========================================================
+   SECURITY
+========================================================= */
+
+.security-note {
+
+  display: flex;
+
+  align-items: flex-start;
+
+  gap: 10px;
+
+  margin-top: 30px;
+
+  padding-top: 25px;
+
+  border-top: 1px solid rgba(255,255,255,.08);
+
+}
+
+
+.security-note span {
+
+  font-size: .8rem;
+
+}
+
+
+.security-note p {
+
+  font-size: .65rem;
+
+  line-height: 1.6;
+
+  color: rgba(255,255,255,.35);
+
+}
+
+
+/* =========================================================
+   FOOTER
+========================================================= */
+
+.admin-footer {
+
+  text-align: center;
+
+  font-size: .55rem;
+
+  letter-spacing: .2em;
+
+  opacity: .25;
+
+  padding: 20px 0;
+
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 600px) {
+
+  .admin-page {
+
+    padding: 24px;
+
+  }
+
+
+  .admin-label {
+
+    font-size: .5rem;
+
+  }
+
+
+  .login-wrapper {
+
+    padding: 50px 0;
+
+  }
+
+
+  .login-card {
+
+    padding: 35px 25px;
+
+    border-radius: 22px;
+
+  }
+
+
+  h1 {
+
+    font-size: 4rem;
+
+  }
+
+}
