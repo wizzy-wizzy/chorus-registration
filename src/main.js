@@ -3,20 +3,37 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 gsap.registerPlugin(ScrollTrigger);
+
+
+/* =========================================================
+   CHORUS 2026 — MAIN PAGE
+========================================================= */
+
 document.querySelector('#app').innerHTML = `
+
   <main class="site">
+
+    <!-- =====================================================
+         HERO
+    ====================================================== -->
 
     <section class="hero">
 
       <nav class="navbar">
-        <a href="#" class="logo">
+
+        <a href="/" class="logo">
           CHORUS<span>2026</span>
         </a>
 
-        <a href="#register" class="nav-button">
+        <a
+          href="/src/register/register.html"
+          class="nav-button"
+        >
           Register
         </a>
+
       </nav>
+
 
       <div class="hero-content">
 
@@ -24,16 +41,25 @@ document.querySelector('#app').innerHTML = `
           AN ECHO OF WORSHIP
         </p>
 
+
         <h1 class="hero-title">
+
           CHORUS
+
           <span>2026</span>
+
         </h1>
 
+
         <p class="hero-description">
+
           One sound. One spirit. One encounter.
+
           A gathering of worshippers, singers,
           musicians and lovers of God's presence.
+
         </p>
+
 
         <div class="hero-actions">
 
@@ -44,6 +70,7 @@ document.querySelector('#app').innerHTML = `
             Register Now
             <span>↗</span>
           </a>
+
 
           <a
             href="#about"
@@ -56,37 +83,66 @@ document.querySelector('#app').innerHTML = `
 
       </div>
 
+
       <div class="hero-footer">
-        <span>13TH SEPTEMBER 2026</span>
-        <span>PORT HARCOURT, NIGERIA</span>
+
+        <span>
+          13TH SEPTEMBER 2026
+        </span>
+
+        <span>
+          PORT HARCOURT, NIGERIA
+        </span>
+
       </div>
 
+
       <div class="scroll-indicator">
+
         <span></span>
+
         SCROLL TO EXPLORE
+
       </div>
 
     </section>
 
 
-    <section class="about" id="about">
+
+    <!-- =====================================================
+         ABOUT
+    ====================================================== -->
+
+    <section
+      class="about"
+      id="about"
+    >
 
       <div class="section-label">
         01 — ABOUT
       </div>
 
+
       <div class="about-content">
 
         <h2>
+
           More than a program.
-          <span>An encounter.</span>
+
+          <span>
+            An encounter.
+          </span>
+
         </h2>
 
+
         <p>
+
           CHORUS 2026 is a gathering created to bring
           people together through worship, music,
           fellowship and an atmosphere centered
           on God's presence.
+
         </p>
 
       </div>
@@ -94,11 +150,20 @@ document.querySelector('#app').innerHTML = `
     </section>
 
 
-    <section class="register-section" id="register">
+
+    <!-- =====================================================
+         REGISTRATION
+    ====================================================== -->
+
+    <section
+      class="register-section"
+      id="register"
+    >
 
       <div class="section-label">
         02 — REGISTRATION
       </div>
+
 
       <div class="register-card">
 
@@ -106,14 +171,22 @@ document.querySelector('#app').innerHTML = `
           CHORUS 2026
         </p>
 
+
         <h2>
+
           Your seat
-          <span>awaits.</span>
+
+          <span>
+            awaits.
+          </span>
+
         </h2>
 
+
         <p>
-          Registration will open shortly.
+          Secure your place at CHORUS 2026.
         </p>
+
 
         <a
           href="/src/register/register.html"
@@ -128,11 +201,13 @@ document.querySelector('#app').innerHTML = `
     </section>
 
   </main>
+
 `;
 
 
+
 /* =========================================================
-   GSAP — CHORUS 2026 HERO ANIMATION
+   GSAP — HERO TIMELINE
 ========================================================= */
 
 const tl = gsap.timeline({
@@ -142,9 +217,10 @@ const tl = gsap.timeline({
 });
 
 
-/* ---------------------------------------------------------
+
+/* =========================================================
    INITIAL STATES
---------------------------------------------------------- */
+========================================================= */
 
 gsap.set(".navbar", {
   opacity: 0,
@@ -181,9 +257,10 @@ gsap.set(".scroll-indicator", {
 });
 
 
-/* ---------------------------------------------------------
+
+/* =========================================================
    NAVBAR
---------------------------------------------------------- */
+========================================================= */
 
 tl.to(".navbar", {
   opacity: 1,
@@ -192,71 +269,102 @@ tl.to(".navbar", {
 });
 
 
-/* ---------------------------------------------------------
+
+/* =========================================================
    EYEBROW
---------------------------------------------------------- */
+========================================================= */
 
-tl.to(".hero-eyebrow", {
-  opacity: 1,
-  y: 0,
-  duration: 0.7
-}, "-=0.35");
-
-
-/* ---------------------------------------------------------
-   MAIN TITLE
---------------------------------------------------------- */
-
-tl.to(".hero-title", {
-  opacity: 1,
-  y: 0,
-  duration: 1.2,
-  ease: "power4.out"
-}, "-=0.35");
+tl.to(
+  ".hero-eyebrow",
+  {
+    opacity: 1,
+    y: 0,
+    duration: 0.7
+  },
+  "-=0.35"
+);
 
 
-/* ---------------------------------------------------------
+
+/* =========================================================
+   TITLE
+========================================================= */
+
+tl.to(
+  ".hero-title",
+  {
+    opacity: 1,
+    y: 0,
+    duration: 1.2,
+    ease: "power4.out"
+  },
+  "-=0.35"
+);
+
+
+
+/* =========================================================
    DESCRIPTION
---------------------------------------------------------- */
+========================================================= */
 
-tl.to(".hero-description", {
-  opacity: 1,
-  y: 0,
-  duration: 0.8
-}, "-=0.55");
+tl.to(
+  ".hero-description",
+  {
+    opacity: 1,
+    y: 0,
+    duration: 0.8
+  },
+  "-=0.55"
+);
 
 
-/* ---------------------------------------------------------
+
+/* =========================================================
    BUTTONS
---------------------------------------------------------- */
+========================================================= */
 
-tl.to(".hero-button", {
-  opacity: 1,
-  y: 0,
-  duration: 0.7,
-  stagger: 0.12
-}, "-=0.4");
+tl.to(
+  ".hero-button",
+  {
+    opacity: 1,
+    y: 0,
+    duration: 0.7,
+    stagger: 0.12
+  },
+  "-=0.4"
+);
 
 
-/* ---------------------------------------------------------
+
+/* =========================================================
    FOOTER
---------------------------------------------------------- */
+========================================================= */
 
-tl.to(".hero-footer", {
-  opacity: 1,
-  y: 0,
-  duration: 0.7
-}, "-=0.25");
+tl.to(
+  ".hero-footer",
+  {
+    opacity: 1,
+    y: 0,
+    duration: 0.7
+  },
+  "-=0.25"
+);
 
 
-/* ---------------------------------------------------------
+
+/* =========================================================
    SCROLL INDICATOR
---------------------------------------------------------- */
+========================================================= */
 
-tl.to(".scroll-indicator", {
-  opacity: 1,
-  duration: 0.8
-}, "-=0.3");
+tl.to(
+  ".scroll-indicator",
+  {
+    opacity: 1,
+    duration: 0.8
+  },
+  "-=0.3"
+);
+
 
 
 /* =========================================================
@@ -264,38 +372,59 @@ tl.to(".scroll-indicator", {
 ========================================================= */
 
 gsap.from(".hero-title span", {
+
   opacity: 0,
   y: 35,
+
   duration: 1,
+
   delay: 1.5,
+
   ease: "power3.out"
+
 });
 
 
+
 /* =========================================================
-   REGISTER BUTTON HOVER
+   PRIMARY BUTTON HOVER
 ========================================================= */
 
-const primaryButtons = document.querySelectorAll(".primary-button");
+const primaryButtons =
+  document.querySelectorAll(".primary-button");
+
 
 primaryButtons.forEach((button) => {
 
-  const arrow = button.querySelector("span");
+  const arrow =
+    button.querySelector("span");
+
 
   button.addEventListener("mouseenter", () => {
 
     gsap.to(button, {
+
       y: -4,
+
       duration: 0.3,
+
       ease: "power2.out"
+
     });
 
+
     if (arrow) {
+
       gsap.to(arrow, {
+
         x: 5,
+
         duration: 0.3,
+
         ease: "power2.out"
+
       });
+
     }
 
   });
@@ -304,17 +433,28 @@ primaryButtons.forEach((button) => {
   button.addEventListener("mouseleave", () => {
 
     gsap.to(button, {
+
       y: 0,
+
       duration: 0.3,
+
       ease: "power2.out"
+
     });
 
+
     if (arrow) {
+
       gsap.to(arrow, {
+
         x: 0,
+
         duration: 0.3,
+
         ease: "power2.out"
+
       });
+
     }
 
   });
@@ -322,126 +462,224 @@ primaryButtons.forEach((button) => {
 });
 
 
+
 /* =========================================================
    NAV BUTTON HOVER
 ========================================================= */
 
-const navButton = document.querySelector(".nav-button");
+const navButton =
+  document.querySelector(".nav-button");
+
 
 if (navButton) {
 
-  navButton.addEventListener("mouseenter", () => {
+  navButton.addEventListener(
+    "mouseenter",
+    () => {
 
-    gsap.to(navButton, {
-      y: -2,
-      duration: 0.25,
-      ease: "power2.out"
-    });
+      gsap.to(navButton, {
 
-  });
+        y: -2,
+
+        duration: 0.25,
+
+        ease: "power2.out"
+
+      });
+
+    }
+  );
 
 
-  navButton.addEventListener("mouseleave", () => {
+  navButton.addEventListener(
+    "mouseleave",
+    () => {
 
-    gsap.to(navButton, {
-      y: 0,
-      duration: 0.25,
-      ease: "power2.out"
-    });
+      gsap.to(navButton, {
 
-  });
+        y: 0,
+
+        duration: 0.25,
+
+        ease: "power2.out"
+
+      });
+
+    }
+  );
 
 }
 
 
-/* =========================================================
-   SCROLL INDICATOR ANIMATION
-========================================================= */
-
-gsap.to(".scroll-indicator span", {
-  scaleY: 0.45,
-  transformOrigin: "top",
-  duration: 1.4,
-  repeat: -1,
-  yoyo: true,
-  ease: "sine.inOut"
-});
 
 /* =========================================================
-   SCROLLTRIGGER — ABOUT SECTION
+   SCROLL INDICATOR
 ========================================================= */
 
-gsap.from(".about .section-label", {
-  scrollTrigger: {
-    trigger: ".about",
-    start: "top 80%",
-    toggleActions: "play none none reverse"
-  },
+gsap.to(
+  ".scroll-indicator span",
+  {
 
-  opacity: 0,
-  x: -40,
-  duration: 0.8,
-  ease: "power3.out"
-});
+    scaleY: 0.45,
 
+    transformOrigin: "top",
 
-gsap.from(".about-content h2", {
-  scrollTrigger: {
-    trigger: ".about-content",
-    start: "top 80%",
-    toggleActions: "play none none reverse"
-  },
+    duration: 1.4,
 
-  opacity: 0,
-  y: 80,
-  duration: 1,
-  ease: "power4.out"
-});
+    repeat: -1,
 
+    yoyo: true,
 
-gsap.from(".about-content p", {
-  scrollTrigger: {
-    trigger: ".about-content p",
-    start: "top 85%",
-    toggleActions: "play none none reverse"
-  },
+    ease: "sine.inOut"
 
-  opacity: 0,
-  y: 40,
-  duration: 0.8,
-  delay: 0.15,
-  ease: "power3.out"
-});
+  }
+);
+
 
 
 /* =========================================================
-   SCROLLTRIGGER — REGISTRATION SECTION
+   SCROLLTRIGGER — ABOUT
 ========================================================= */
 
-gsap.from(".register-section .section-label", {
-  scrollTrigger: {
-    trigger: ".register-section",
-    start: "top 80%",
-    toggleActions: "play none none reverse"
-  },
+gsap.from(
+  ".about .section-label",
+  {
 
-  opacity: 0,
-  x: -40,
-  duration: 0.8,
-  ease: "power3.out"
-});
+    scrollTrigger: {
+
+      trigger: ".about",
+
+      start: "top 80%",
+
+      toggleActions:
+        "play none none reverse"
+
+    },
+
+    opacity: 0,
+
+    x: -40,
+
+    duration: 0.8,
+
+    ease: "power3.out"
+
+  }
+);
 
 
-gsap.from(".register-card", {
-  scrollTrigger: {
-    trigger: ".register-card",
-    start: "top 80%",
-    toggleActions: "play none none reverse"
-  },
+gsap.from(
+  ".about-content h2",
+  {
 
-  opacity: 0,
-  y: 100,
-  scale: 0.97,
-  duration: 1.1,
-  ease: "power4.out"
-});
+    scrollTrigger: {
+
+      trigger: ".about-content",
+
+      start: "top 80%",
+
+      toggleActions:
+        "play none none reverse"
+
+    },
+
+    opacity: 0,
+
+    y: 80,
+
+    duration: 1,
+
+    ease: "power4.out"
+
+  }
+);
+
+
+gsap.from(
+  ".about-content p",
+  {
+
+    scrollTrigger: {
+
+      trigger: ".about-content p",
+
+      start: "top 85%",
+
+      toggleActions:
+        "play none none reverse"
+
+    },
+
+    opacity: 0,
+
+    y: 40,
+
+    duration: 0.8,
+
+    delay: 0.15,
+
+    ease: "power3.out"
+
+  }
+);
+
+
+
+/* =========================================================
+   SCROLLTRIGGER — REGISTRATION
+========================================================= */
+
+gsap.from(
+  ".register-section .section-label",
+  {
+
+    scrollTrigger: {
+
+      trigger: ".register-section",
+
+      start: "top 80%",
+
+      toggleActions:
+        "play none none reverse"
+
+    },
+
+    opacity: 0,
+
+    x: -40,
+
+    duration: 0.8,
+
+    ease: "power3.out"
+
+  }
+);
+
+
+gsap.from(
+  ".register-card",
+  {
+
+    scrollTrigger: {
+
+      trigger: ".register-card",
+
+      start: "top 80%",
+
+      toggleActions:
+        "play none none reverse"
+
+    },
+
+    opacity: 0,
+
+    y: 100,
+
+    scale: 0.97,
+
+    duration: 1.1,
+
+    ease: "power4.out"
+
+  }
+);
