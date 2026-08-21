@@ -986,3 +986,39 @@ tbody tr:hover {
   }
 
 }
+
+.actions-cell {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.whatsapp-button {
+  border: 0;
+  cursor: pointer;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  background: #25d366;
+  color: #ffffff;
+  transition:
+    transform 0.2s ease,
+    opacity 0.2s ease;
+}
+
+.whatsapp-button:hover:not(:disabled) {
+  transform: translateY(-2px);
+  opacity: 0.9;
+}
+
+.whatsapp-button:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.whatsapp-disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}

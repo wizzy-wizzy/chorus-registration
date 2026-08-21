@@ -403,16 +403,44 @@ function renderTable() {
           )}
         </td>
 
-        <td>
+        <td class="actions-cell">
 
           <button
             class="view-button"
             data-id="${escapeHTML(
-              registration.registration_id
+              registration.registration_id || ""
             )}"
           >
             View
           </button>
+
+          ${
+            registration.phone
+              ? `
+                <button
+                  class="whatsapp-button"
+                  data-whatsapp-id="${escapeHTML(
+                    registration.registration_id || ""
+                  )}"
+                  title="Contact ${
+                    escapeHTML(
+                      registration.full_name || "attendee"
+                    )
+                  } on WhatsApp"
+                >
+                  💬 WhatsApp
+                </button>
+              `
+              : `
+                <button
+                  class="whatsapp-button whatsapp-disabled"
+                  disabled
+                  title="No WhatsApp number available"
+                >
+                  💬 WhatsApp
+                </button>
+              `
+          }
 
         </td>
 
@@ -637,6 +665,162 @@ function openAttendee(
 
 
 /* =========================================================
+   WHATSAPP CONTACT
+========================================================= */
+
+function normalizeNigerianPhone(
+  phone
+) {
+
+  if (!phone) {
+
+    return null;
+
+  }
+
+
+  let cleaned =
+    String(phone)
+      .trim()
+      .replace(/\D/g, "");
+
+
+  if (!cleaned) {
+
+    return null;
+
+  }
+
+
+  /*
+
+    Nigerian examples:
+
+    08012345678
+    ↓
+    2348012345678
+
+    8012345678
+    ↓
+    2348012345678
+
+    2348012345678
+    ↓
+    2348012345678
+
+  */
+
+  if (
+    cleaned.startsWith("234")
+  ) {
+
+    return cleaned;
+
+  }
+
+
+  if (
+    cleaned.startsWith("0")
+  ) {
+
+    cleaned =
+      cleaned.slice(1);
+
+  }
+
+
+  return `234${cleaned}`;
+
+}
+
+
+function openWhatsApp(
+  registration
+) {
+
+  if (!registration) {
+
+    showToast(
+      "Registration not found."
+    );
+
+    return;
+
+  }
+
+
+  const phone =
+    normalizeNigerianPhone(
+      registration.phone
+    );
+
+
+  if (!phone) {
+
+    showToast(
+      "This attendee does not have a valid WhatsApp number."
+    );
+
+    return;
+
+  }
+
+
+  const name =
+    registration.full_name ||
+    "there";
+
+
+  const registrationId =
+    registration.registration_id ||
+    "—";
+
+
+  const attendance =
+    registration.attendance === "group"
+      ? `You registered as part of a group of ${
+          registration.group_size || 1
+        } people.`
+      : "You registered to attend alone.";
+
+
+  const message =
+`Hello ${name} 👋
+
+This is the CHORUS 2026 team 🎶
+
+We’re reaching out regarding your registration for CHORUS 2026.
+
+✅ Registration ID: ${registrationId}
+📅 Event Date: 13 September 2026
+📍 Location: Zion City of God Church, Behind Shell Location, Aluu Link Rd, Rukpokwu, Port Harcourt
+
+${attendance}
+
+Thank you for registering with us. We’re excited to have you join us for this special gathering.
+
+Please keep your registration ID for reference.
+
+With warmth,
+The CHORUS 2026 / Echoverse Team`;
+
+
+  const whatsappURL =
+    `https://wa.me/${phone}?text=${
+      encodeURIComponent(message)
+    }`;
+
+
+  window.open(
+    whatsappURL,
+    "_blank",
+    "noopener,noreferrer"
+  );
+
+}
+
+
+/* =========================================================
    CLOSE MODAL
 ========================================================= */
 
@@ -835,6 +1019,7 @@ async function logout() {
 
     logoutButton.textContent =
       "Logout";
+
 
     showToast(
       "Could not log out. Try again."
@@ -1157,40 +1342,92 @@ document.addEventListener(
 
 
 /* =========================================================
-   TABLE VIEW BUTTON
+   TABLE ACTION BUTTONS
 ========================================================= */
 
 tableBody.addEventListener(
   "click",
   (event) => {
 
-    const button =
+    /* VIEW BUTTON */
+
+    const viewButton =
       event.target.closest(
         ".view-button"
       );
 
 
-    if (!button) return;
+    if (viewButton) {
+
+      const id =
+        viewButton.dataset.id;
 
 
-    const id =
-      button.dataset.id;
+      const registration =
+        registrations.find(
+          item =>
+            String(
+              item.registration_id
+            ) === String(id)
+        );
 
 
-    const registration =
-      registrations.find(
-        item =>
-          String(
-            item.registration_id
-          ) === String(id)
+      if (registration) {
+
+        openAttendee(
+          registration
+        );
+
+      }
+
+      return;
+
+    }
+
+
+    /* WHATSAPP BUTTON */
+
+    const whatsappButton =
+      event.target.closest(
+        ".whatsapp-button"
       );
 
 
-    if (registration) {
+    if (whatsappButton) {
 
-      openAttendee(
-        registration
-      );
+      if (
+        whatsappButton.disabled
+      ) {
+
+        showToast(
+          "No WhatsApp number is available for this attendee."
+        );
+
+        return;
+
+      }
+
+
+      const id =
+        whatsappButton.dataset.whatsappId;
+
+
+      const registration =
+        registrations.find(
+          item =>
+            String(
+              item.registration_id
+            ) === String(id)
+        );
+
+
+      if (registration) {
+
+        openWhatsApp(
+          registration
+        );
+
+      }
 
     }
 
