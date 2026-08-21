@@ -15,6 +15,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const registrationId =
     params.get("id");
 
+  const emailStatus =
+    params.get("email");
+
 
   const registrationElement =
     document.querySelector("#registration-id");
@@ -26,6 +29,24 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const copyMessage =
     document.querySelector("#copy-message");
+
+  const emailStatusElement =
+    document.querySelector("#email-status");
+
+
+  if (emailStatus === "sent") {
+
+    emailStatusElement.textContent =
+      "A confirmation email is on its way. Please check your inbox.";
+
+  } else if (emailStatus === "failed") {
+
+    emailStatusElement.textContent =
+      "Your registration is saved, but we could not send the confirmation email. Please keep your registration ID.";
+
+    emailStatusElement.classList.add("email-status-warning");
+
+  }
 
 
   /* -------------------------------------------------------

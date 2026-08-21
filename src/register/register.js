@@ -144,6 +144,117 @@ if (form) {
       );
 
 
+      /* =====================================================
+         SEND AUTOMATED CONFIRMATION EMAIL
+      ===================================================== */
+
+      let emailStatus = "skipped";
+
+      if (registrationData.email) {
+
+        console.log(
+          "Sending confirmation email..."
+        );
+
+        try {
+
+          const { data: emailData, error: emailError } =
+            await supabase.functions.invoke(
+              "send-registration-email",
+              {
+                body: {
+
+                  full_name:
+                    registrationData.full_name,
+
+                  phone:
+                    registrationData.phone,
+
+                  email:
+                    registrationData.email,
+
+                  gender:
+                    registrationData.gender,
+
+                  city:
+                    registrationData.city,
+
+                  registration_id:
+                    registrationId,
+
+                  attendance:
+                    registrationData.attendance,
+
+                  group_size:
+                    registrationData.group_size,
+
+                  church:
+                    registrationData.church,
+
+                  source:
+                    registrationData.source,
+
+                  message:
+                    registrationData.message
+
+                }
+              }
+            );
+
+
+          if (emailError) {
+
+            /*
+             * IMPORTANT:
+             * Do NOT fail the registration if the
+             * email fails.
+             *
+             * The person's registration has already
+             * been successfully saved.
+             */
+
+            console.error(
+              "Confirmation email failed:",
+              emailError
+            );
+
+            emailStatus = "failed";
+
+          }
+
+          else {
+
+            console.log(
+              "Confirmation email sent:",
+              emailData
+            );
+
+            emailStatus = "sent";
+
+          }
+
+        } catch (emailException) {
+
+          console.error(
+            "Confirmation email failed:",
+            emailException
+          );
+
+          emailStatus = "failed";
+
+        }
+
+      }
+
+      else {
+
+        console.log(
+          "No email provided. Skipping confirmation email."
+        );
+
+      }
+
+
       /* -----------------------------------------------------
          SUCCESS STATE
       ----------------------------------------------------- */
@@ -173,14 +284,14 @@ if (form) {
          REDIRECT TO SUCCESS PAGE
       ----------------------------------------------------- */
 
-setTimeout(() => {
+      setTimeout(() => {
 
-  window.location.href =
-    `/src/register/success.html?id=${encodeURIComponent(
-      registrationId
-    )}`;
+        window.location.href =
+          `/src/register/success.html?id=${encodeURIComponent(
+            registrationId
+          )}&email=${emailStatus}`;
 
-}, 1000);
+      }, 1000);
 
 
     } catch (error) {
@@ -209,10 +320,15 @@ setTimeout(() => {
 
         {
           x: 6,
+
           duration: 0.08,
+
           repeat: 5,
+
           yoyo: true,
+
           ease: "power1.inOut",
+
           onComplete: () => {
 
             gsap.set(submitButton, {
@@ -220,6 +336,7 @@ setTimeout(() => {
             });
 
           }
+
         }
 
       );
@@ -254,99 +371,67 @@ document.addEventListener("DOMContentLoaded", () => {
   ======================================================= */
 
   gsap.set(".registration-nav", {
-
     opacity: 0,
-
     y: -25
-
   });
 
 
   gsap.set(".registration-intro", {
-
     opacity: 0,
-
     x: -50
-
   });
 
 
   gsap.set(".registration-form", {
-
     opacity: 0,
-
     x: 50
-
   });
 
 
   gsap.set(".registration-intro .eyebrow", {
-
     opacity: 0,
-
     y: 20
-
   });
 
 
   gsap.set(".registration-intro h1", {
-
     opacity: 0,
-
     y: 50
-
   });
 
 
   gsap.set(".intro-text", {
-
     opacity: 0,
-
     y: 25
-
   });
 
 
   gsap.set(".event-info > div", {
-
     opacity: 0,
-
     y: 20
-
   });
 
 
   gsap.set(".form-section", {
-
     opacity: 0,
-
     y: 35
-
   });
 
 
   gsap.set(".form-consent", {
-
     opacity: 0,
-
     y: 20
-
   });
 
 
   gsap.set(".submit-button", {
-
     opacity: 0,
-
     y: 20
-
   });
 
 
   gsap.set(".form-note", {
-
     opacity: 0
-
   });
 
 
@@ -355,13 +440,9 @@ document.addEventListener("DOMContentLoaded", () => {
   ======================================================= */
 
   const tl = gsap.timeline({
-
     defaults: {
-
       ease: "power3.out"
-
     }
-
   });
 
 
@@ -531,14 +612,11 @@ document.addEventListener("DOMContentLoaded", () => {
   ======================================================= */
 
   const fields = document.querySelectorAll(
-
     ".field input, .field select, .field textarea"
-
   );
 
 
   fields.forEach((field) => {
-
 
     field.addEventListener("focus", () => {
 
@@ -568,7 +646,6 @@ document.addEventListener("DOMContentLoaded", () => {
       });
 
     });
-
 
   });
 
@@ -628,7 +705,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (backLink) {
 
-
     backLink.addEventListener(
       "mouseenter",
       () => {
@@ -664,7 +740,6 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     );
 
-
   }
 
 
@@ -679,7 +754,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
   if (submitButton) {
-
 
     submitButton.addEventListener(
       "mouseenter",
@@ -749,7 +823,6 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     );
 
-
   }
 
 
@@ -762,7 +835,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
   if (logo) {
-
 
     logo.addEventListener(
       "mouseenter",
@@ -799,8 +871,6 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     );
 
-
   }
-
 
 });
