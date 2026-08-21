@@ -1233,6 +1233,83 @@ tbody tr:hover {
   opacity: 0.45;
 }
 
+.event-mode-button {
+  padding: 14px 20px;
+  border: 1px solid rgba(140,255,155,.35);
+  border-radius: 100px;
+  background: transparent;
+  color: #8cff9b;
+  font-size: .7rem;
+  font-weight: 700;
+}
+
+.event-mode-button:hover {
+  background: #8cff9b;
+  color: #080808;
+}
+
+.event-day-title {
+  display: none;
+  color: rgba(255,255,255,.35);
+  font-size: .65rem;
+  letter-spacing: .14em;
+}
+
+.event-mode-active .event-day-title {
+  display: inline-block;
+}
+
+.event-mode-active .event-day-status {
+  border-color: rgba(140,255,155,.35);
+  background: rgba(140,255,155,.06);
+}
+
+.check-in-progress {
+  margin: -70px 0 70px;
+  padding: 18px 20px;
+  border: 1px solid rgba(255,255,255,.1);
+  background: rgba(255,255,255,.025);
+}
+
+.progress-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  margin-bottom: 12px;
+  color: rgba(255,255,255,.55);
+  font-size: .7rem;
+}
+
+.progress-heading strong {
+  color: #fff;
+}
+
+.progress-track {
+  height: 8px;
+  overflow: hidden;
+  border-radius: 100px;
+  background: rgba(255,255,255,.1);
+}
+
+.progress-bar {
+  display: block;
+  width: 0;
+  height: 100%;
+  border-radius: inherit;
+  background: #8cff9b;
+  transition: width .35s ease;
+}
+
+.check-in-updated {
+  animation: check-in-highlight .8s ease-out;
+}
+
+@keyframes check-in-highlight {
+  from { background: rgba(140,255,155,.2); }
+  to { background: transparent; }
+}
+
 .event-day-status {
   display: flex;
   align-items: center;
@@ -1336,5 +1413,125 @@ tbody tr:hover {
     flex-direction: column;
     gap: 8px;
     margin-top: -35px;
+  }
+
+  .dashboard-header {
+    gap: 15px;
+  }
+
+  .refresh-button,
+  .event-mode-button {
+    width: 100%;
+    min-height: 48px;
+  }
+
+  .check-in-progress {
+    margin: -15px 0 45px;
+  }
+
+  .check-in-filter {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    padding: 10px 0;
+    background: #080808;
+  }
+
+  .filter-button {
+    flex: 1 1 30%;
+    min-height: 46px;
+  }
+
+  .table-wrapper {
+    overflow-x: visible;
+    border: 0;
+  }
+
+  table,
+  tbody,
+  tr,
+  td {
+    display: block;
+    width: 100%;
+  }
+
+  table {
+    min-width: 0;
+  }
+
+  thead {
+    display: none;
+  }
+
+  tbody tr {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px 16px;
+    margin-bottom: 16px;
+    padding: 18px;
+    border: 1px solid rgba(255,255,255,.1);
+    background: rgba(255,255,255,.025);
+  }
+
+  tbody td {
+    padding: 0;
+    border: 0;
+  }
+
+  tbody td:nth-child(1),
+  tbody td:nth-child(2),
+  tbody td:nth-child(3),
+  tbody td:nth-child(8),
+  tbody td:nth-child(9) {
+    grid-column: 1 / -1;
+  }
+
+  tbody td:nth-child(1) {
+    order: 1;
+  }
+
+  tbody td:nth-child(2) {
+    order: 2;
+    font-size: 1.15rem;
+  }
+
+  tbody td:nth-child(3) {
+    order: 3;
+  }
+
+  tbody td:nth-child(4),
+  tbody td:nth-child(5),
+  tbody td:nth-child(6),
+  tbody td:nth-child(7) {
+    display: none;
+  }
+
+  tbody td:nth-child(8) {
+    order: 4;
+  }
+
+  tbody td:nth-child(9) {
+    order: 5;
+  }
+
+  .check-in-button {
+    width: 100%;
+    min-height: 52px;
+    font-size: .78rem;
+  }
+
+  .actions-cell {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .actions-cell .view-button,
+  .actions-cell .whatsapp-button,
+  .actions-cell .reminder-button {
+    min-height: 46px;
+  }
+
+  .actions-cell .check-in-button {
+    grid-column: 1 / -1;
   }
 }

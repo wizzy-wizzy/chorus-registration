@@ -33,6 +33,12 @@ const exportButton =
 const logoutButton =
   document.querySelector("#logout-button");
 
+const eventModeButton =
+  document.querySelector("#event-mode-button");
+
+const dashboardPage =
+  document.querySelector(".dashboard-page");
+
 
 const totalRegistrations =
   document.querySelector("#total-registrations");
@@ -60,6 +66,18 @@ const eventDayLabel =
 
 const eventDayDescription =
   document.querySelector("#event-day-description");
+
+const eventDayTitle =
+  document.querySelector(".event-day-title");
+
+const checkInProgressLabel =
+  document.querySelector("#check-in-progress-label");
+
+const checkInProgressPercent =
+  document.querySelector("#check-in-progress-percent");
+
+const checkInProgressBar =
+  document.querySelector("#check-in-progress-bar");
 
 const filterButtons =
   document.querySelectorAll("[data-check-in-filter]");
@@ -103,6 +121,20 @@ let pendingReminderRegistration = null;
 
 let checkInFilter = "all";
 
+let searchTerm = "";
+
+let eventModeEnabled = false;
+
+let refreshTimer = null;
+
+let isRefreshing = false;
+
+let hasRenderedTable = false;
+
+let previousRegistrationSignature = "";
+
+let isCheckingIn = false;
+
 
 /* =========================================================
    AUTH CHECK
@@ -138,13 +170,33 @@ async function checkAdminSession() {
 
 async function loadRegistrations() {
 
-  tableBody.innerHTML = `
-    <tr>
-      <td colspan="9" class="loading-cell">
-        Loading registrations...
-      </td>
-    </tr>
-  `;
+  if (isRefreshing || isCheckingIn) {
+
+    return;
+
+  }
+
+  isRefreshing = true;
+
+  const previousCheckInState =
+    new Map(
+      registrations.map(
+        (registration) => [
+          registration.registration_id,
+          registration.checked_in_at
+        ]
+      )
+    );
+
+  if (registrations.length === 0) {
+    tableBody.innerHTML = `
+      <tr>
+        <td colspan="9" class="loading-cell">
+          Loading registrations...
+        </td>
+      </tr>
+    `;
+  }
 
 
   emptyState.classList.add("hidden");
@@ -176,19 +228,40 @@ async function loadRegistrations() {
     }
 
 
-    registrations =
-      data || [];
+    const nextRegistrations = data || [];
+    const nextRegistrationSignature = JSON.stringify(
+      nextRegistrations.map(
+        (registration) => [
+          registration.registration_id,
+          registration.full_name,
+          registration.phone,
+          registration.checked_in_at
+        ]
+      )
+    );
 
+    const shouldRender =
+      !hasRenderedTable ||
+      nextRegistrationSignature !== previousRegistrationSignature;
 
-    filteredRegistrations =
-      [...registrations];
+    registrations = nextRegistrations;
+    filteredRegistrations = filterRegistrations(
+      registrations,
+      searchTerm
+    );
+    previousRegistrationSignature =
+      nextRegistrationSignature;
 
 
     updateStatistics();
 
     updateEventDayStatus();
 
-    renderTable();
+    if (shouldRender) {
+
+      renderTable(previousCheckInState);
+
+    }
 
 
   } catch (error) {
@@ -198,6 +271,8 @@ async function loadRegistrations() {
       error
     );
 
+    hasRenderedTable = false;
+
 
     tableBody.innerHTML = `
       <tr>
@@ -206,6 +281,10 @@ async function loadRegistrations() {
         </td>
       </tr>
     `;
+
+  } finally {
+
+    isRefreshing = false;
 
   }
 
@@ -298,6 +377,15 @@ function updateStatistics() {
     total - checkedIn
   );
 
+  checkInProgressLabel.textContent =
+    `${checkedIn} / ${total} checked in`;
+
+  const progress =
+    total === 0 ? 0 : Math.round((checkedIn / total) * 100);
+
+  checkInProgressPercent.textContent = `${progress}%`;
+  checkInProgressBar.style.width = `${progress}%`;
+
 }
 
 
@@ -332,17 +420,64 @@ function isCheckInOpen() {
 
   const date = getLagosDate();
 
-  return `${date.year}-${date.month}-${date.day}` >= "2026-09-13";
+  return `${date.year}-${date.month}-${date.day}` === "2026-09-13";
+
+}
+
+
+function getEventDayState() {
+
+  const date = getLagosDate();
+  const today = `${date.year}-${date.month}-${date.day}`;
+
+  if (today < "2026-09-13") {
+
+    return "before";
+
+  }
+
+  if (today === "2026-09-13") {
+
+    return "event";
+
+  }
+
+  return "after";
 
 }
 
 
 function updateEventDayStatus() {
 
-  if (isCheckInOpen()) {
+  const eventDayState = getEventDayState();
+
+  const eventModeIsActive =
+    eventModeEnabled || eventDayState === "event";
+
+  dashboardPage.classList.toggle(
+    "event-mode-active",
+    eventModeIsActive
+  );
+
+  eventDayTitle.textContent =
+    eventModeIsActive
+      ? "CHORUS 2026 · EVENT DAY"
+      : "CHORUS 2026";
+
+  eventModeButton.textContent =
+    eventModeIsActive
+      ? "Normal Dashboard"
+      : "Event Day Mode";
+
+  if (eventDayState === "event") {
 
     eventDayLabel.textContent = "🟢 CHECK-IN OPEN";
-    eventDayDescription.textContent = "Check-in is available today.";
+    eventDayDescription.textContent = "Event Day";
+
+  } else if (eventDayState === "after") {
+
+    eventDayLabel.textContent = "🔴 CHECK-IN CLOSED";
+    eventDayDescription.textContent = "Event check-in has ended.";
 
   } else {
 
@@ -350,6 +485,35 @@ function updateEventDayStatus() {
     eventDayDescription.textContent = "Opens September 13, 2026";
 
   }
+
+}
+
+
+function filterRegistrations(
+  source,
+  query
+) {
+
+  const normalizedQuery = query.trim().toLowerCase();
+
+  if (!normalizedQuery) {
+
+    return [...source];
+
+  }
+
+  return source.filter(
+    (registration) =>
+      [
+        registration.full_name,
+        registration.registration_id,
+        registration.phone
+      ]
+        .filter(Boolean)
+        .join(" ")
+        .toLowerCase()
+        .includes(normalizedQuery)
+  );
 
 }
 
@@ -412,6 +576,14 @@ function animateNumber(
         .replace(/\D/g, "")
     ) || 0;
 
+  if (current === value) {
+
+    element.textContent = value;
+
+    return;
+
+  }
+
 
   const object = {
     value: current
@@ -447,7 +619,9 @@ function animateNumber(
    RENDER TABLE
 ========================================================= */
 
-function renderTable() {
+function renderTable(
+  previousCheckInState = null
+) {
 
   tableBody.innerHTML = "";
 
@@ -492,12 +666,18 @@ function renderTable() {
       const checkedIn =
         Boolean(registration.checked_in_at);
 
+      const checkInChanged =
+        previousCheckInState &&
+        previousCheckInState.has(registration.registration_id) &&
+        previousCheckInState.get(registration.registration_id) !==
+          registration.checked_in_at;
+
       const checkInButton =
         checkedIn
           ? `<button class="check-in-button check-in-complete" disabled>
               Already checked in
             </button>`
-          : isCheckInOpen()
+          : getEventDayState() === "event"
             ? `<button
                 class="check-in-button"
                 data-check-in-id="${escapeHTML(
@@ -507,7 +687,10 @@ function renderTable() {
                 ✅ Check In
               </button>`
             : `<button class="check-in-button check-in-locked" disabled>
-                Check-in opens September 13, 2026
+                ${getEventDayState() === "before"
+                  ? "Check-in opens September 13, 2026"
+                  : "Event check-in has ended."
+                }
               </button>`;
 
 
@@ -651,26 +834,49 @@ function renderTable() {
 
       tableBody.appendChild(row);
 
-    }
-  );
+      if (checkInChanged) {
 
+        row.classList.add("check-in-updated");
 
-  gsap.from(
-    "#registrations-table tr",
-    {
-
-      opacity: 0,
-
-      y: 10,
-
-      duration: .35,
-
-      stagger: .03,
-
-      ease: "power2.out"
+      }
 
     }
   );
+
+
+  if (!hasRenderedTable) {
+
+    gsap.from(
+      "#registrations-table tr",
+      {
+
+        opacity: 0,
+
+        y: 10,
+
+        duration: .35,
+
+        stagger: .03,
+
+        ease: "power2.out"
+
+      }
+    );
+
+    hasRenderedTable = true;
+
+  } else {
+
+    gsap.from(
+      ".check-in-updated",
+      {
+        backgroundColor: "rgba(140,255,155,.22)",
+        duration: .6,
+        ease: "power2.out"
+      }
+    );
+
+  }
 
 }
 
@@ -736,62 +942,16 @@ function getReminderStatus(
 ========================================================= */
 
 function searchRegistrations(
-  searchTerm
+  inputValue
 ) {
 
-  const query =
-    searchTerm
-      .trim()
-      .toLowerCase();
+  searchTerm = inputValue.trim();
+  const query = searchTerm.toLowerCase();
 
-
-  if (!query) {
-
-    filteredRegistrations =
-      [...registrations];
-
-    renderTable();
-
-    return;
-
-  }
-
-
-  filteredRegistrations =
-    registrations.filter(
-      (registration) => {
-
-        const searchableText = [
-
-          registration.registration_id,
-
-          registration.full_name,
-
-          registration.phone,
-
-          registration.email,
-
-          registration.city,
-
-          registration.church,
-
-          registration.gender,
-
-          registration.attendance,
-
-          registration.source
-
-        ]
-          .filter(Boolean)
-          .join(" ")
-          .toLowerCase();
-
-
-        return searchableText
-          .includes(query);
-
-      }
-    );
+  filteredRegistrations = filterRegistrations(
+    registrations,
+    query
+  );
 
 
   renderTable();
@@ -1147,6 +1307,16 @@ async function checkInRegistration(
   registration
 ) {
 
+  if (isCheckingIn) {
+
+    return;
+
+  }
+
+  isCheckingIn = true;
+
+  try {
+
   if (!isCheckInOpen()) {
 
     showToast(
@@ -1229,6 +1399,12 @@ async function checkInRegistration(
   showToast(
     `${registration.full_name || "Attendee"} checked in ✓`
   );
+
+  } finally {
+
+    isCheckingIn = false;
+
+  }
 
 }
 
@@ -1805,6 +1981,17 @@ refreshButton.addEventListener(
 );
 
 
+eventModeButton.addEventListener(
+  "click",
+  () => {
+
+    eventModeEnabled = !eventModeEnabled;
+    updateEventDayStatus();
+
+  }
+);
+
+
 exportButton.addEventListener(
   "click",
   exportCSV
@@ -2082,6 +2269,31 @@ async function initialize() {
 
 
   await loadRegistrations();
+
+  refreshTimer = window.setInterval(
+    () => {
+
+      updateEventDayStatus();
+      loadRegistrations();
+
+    },
+    5000
+  );
+
+  window.addEventListener(
+    "pagehide",
+    () => {
+
+      if (refreshTimer) {
+
+        window.clearInterval(refreshTimer);
+        refreshTimer = null;
+
+      }
+
+    },
+    { once: true }
+  );
 
 
   /* Page entrance */
