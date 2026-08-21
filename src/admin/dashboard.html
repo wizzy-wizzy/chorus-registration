@@ -93,6 +93,16 @@
     </header>
 
 
+    <section
+      id="event-day-status"
+      class="event-day-status"
+      aria-live="polite"
+    >
+      <strong id="event-day-label">🔒 CHECK-IN CLOSED</strong>
+      <span id="event-day-description">Opens September 13, 2026</span>
+    </section>
+
+
     <!-- ================================================
          STATISTICS
     ================================================= -->
@@ -103,7 +113,7 @@
       <article class="stat-card">
 
         <span class="stat-label">
-          TOTAL REGISTRATIONS
+          REGISTERED
         </span>
 
         <strong
@@ -199,6 +209,46 @@
 
       </article>
 
+
+      <article class="stat-card check-in-stat-card">
+
+        <span class="stat-label">
+          CHECKED IN
+        </span>
+
+        <strong
+          id="checked-in-registrations"
+          class="stat-number"
+        >
+          —
+        </strong>
+
+        <span class="stat-description">
+          Attendees checked in
+        </span>
+
+      </article>
+
+
+      <article class="stat-card check-in-stat-card">
+
+        <span class="stat-label">
+          REMAINING
+        </span>
+
+        <strong
+          id="remaining-registrations"
+          class="stat-number"
+        >
+          —
+        </strong>
+
+        <span class="stat-description">
+          Attendees remaining
+        </span>
+
+      </article>
+
     </section>
 
 
@@ -259,6 +309,27 @@
       </div>
 
 
+      <div
+        class="check-in-filter"
+        role="group"
+        aria-label="Check-in filter"
+      >
+
+        <button type="button" class="filter-button active" data-check-in-filter="all">
+          All
+        </button>
+
+        <button type="button" class="filter-button" data-check-in-filter="checked-in">
+          Checked In
+        </button>
+
+        <button type="button" class="filter-button" data-check-in-filter="not-checked-in">
+          Not Checked In
+        </button>
+
+      </div>
+
+
       <!-- TABLE -->
 
       <div class="table-wrapper">
@@ -298,6 +369,10 @@
               </th>
 
               <th>
+                CHECK-IN
+              </th>
+
+              <th>
                 ACTION
               </th>
 
@@ -311,7 +386,7 @@
             <tr>
 
               <td
-                colspan="8"
+                colspan="9"
                 class="loading-cell"
               >
                 Loading registrations...

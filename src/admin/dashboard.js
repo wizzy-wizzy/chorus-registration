@@ -49,6 +49,21 @@ const groupRegistrations =
 const remindersDue =
   document.querySelector("#reminders-due");
 
+const checkedInRegistrations =
+  document.querySelector("#checked-in-registrations");
+
+const remainingRegistrations =
+  document.querySelector("#remaining-registrations");
+
+const eventDayLabel =
+  document.querySelector("#event-day-label");
+
+const eventDayDescription =
+  document.querySelector("#event-day-description");
+
+const filterButtons =
+  document.querySelectorAll("[data-check-in-filter]");
+
 
 /* =========================================================
    MODAL
@@ -85,6 +100,8 @@ let registrations = [];
 let filteredRegistrations = [];
 
 let pendingReminderRegistration = null;
+
+let checkInFilter = "all";
 
 
 /* =========================================================
@@ -123,7 +140,7 @@ async function loadRegistrations() {
 
   tableBody.innerHTML = `
     <tr>
-      <td colspan="8" class="loading-cell">
+      <td colspan="9" class="loading-cell">
         Loading registrations...
       </td>
     </tr>
@@ -169,6 +186,8 @@ async function loadRegistrations() {
 
     updateStatistics();
 
+    updateEventDayStatus();
+
     renderTable();
 
 
@@ -182,7 +201,7 @@ async function loadRegistrations() {
 
     tableBody.innerHTML = `
       <tr>
-        <td colspan="8" class="loading-cell">
+        <td colspan="9" class="loading-cell">
           Unable to load registrations.
         </td>
       </tr>
@@ -233,6 +252,12 @@ function updateStatistics() {
         getReminderStatus(registration).isDue
     ).length;
 
+  const checkedIn =
+    registrations.filter(
+      (registration) =>
+        Boolean(registration.checked_in_at)
+    ).length;
+
 
   animateNumber(
     totalRegistrations,
@@ -262,6 +287,69 @@ function updateStatistics() {
     remindersDue,
     dueReminders
   );
+
+  animateNumber(
+    checkedInRegistrations,
+    checkedIn
+  );
+
+  animateNumber(
+    remainingRegistrations,
+    total - checkedIn
+  );
+
+}
+
+
+function getLagosDate() {
+
+  const parts =
+    new Intl.DateTimeFormat(
+      "en-CA",
+      {
+        timeZone: "Africa/Lagos",
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit"
+      }
+    ).formatToParts(new Date());
+
+  return parts.reduce(
+    (dateParts, part) => {
+      if (part.type !== "literal") {
+        dateParts[part.type] = part.value;
+      }
+
+      return dateParts;
+    },
+    {}
+  );
+
+}
+
+
+function isCheckInOpen() {
+
+  const date = getLagosDate();
+
+  return `${date.year}-${date.month}-${date.day}` >= "2026-09-13";
+
+}
+
+
+function updateEventDayStatus() {
+
+  if (isCheckInOpen()) {
+
+    eventDayLabel.textContent = "🟢 CHECK-IN OPEN";
+    eventDayDescription.textContent = "Check-in is available today.";
+
+  } else {
+
+    eventDayLabel.textContent = "🔒 CHECK-IN CLOSED";
+    eventDayDescription.textContent = "Opens September 13, 2026";
+
+  }
 
 }
 
@@ -363,9 +451,19 @@ function renderTable() {
 
   tableBody.innerHTML = "";
 
+  const visibleRegistrations =
+    filteredRegistrations.filter(
+      (registration) =>
+        checkInFilter === "all" ||
+        (checkInFilter === "checked-in" &&
+          registration.checked_in_at) ||
+        (checkInFilter === "not-checked-in" &&
+          !registration.checked_in_at)
+    );
+
 
   if (
-    filteredRegistrations.length === 0
+    visibleRegistrations.length === 0
   ) {
 
     emptyState.classList.remove(
@@ -382,7 +480,7 @@ function renderTable() {
   );
 
 
-  filteredRegistrations.forEach(
+  visibleRegistrations.forEach(
     (registration) => {
 
       const row =
@@ -390,6 +488,27 @@ function renderTable() {
 
       const reminderStatus =
         getReminderStatus(registration);
+
+      const checkedIn =
+        Boolean(registration.checked_in_at);
+
+      const checkInButton =
+        checkedIn
+          ? `<button class="check-in-button check-in-complete" disabled>
+              Already checked in
+            </button>`
+          : isCheckInOpen()
+            ? `<button
+                class="check-in-button"
+                data-check-in-id="${escapeHTML(
+                  registration.registration_id || ""
+                )}"
+              >
+                ✅ Check In
+              </button>`
+            : `<button class="check-in-button check-in-locked" disabled>
+                Check-in opens September 13, 2026
+              </button>`;
 
 
       row.innerHTML = `
@@ -442,6 +561,19 @@ function renderTable() {
               : ""
           }">
             ${escapeHTML(reminderStatus.label)}
+          </span>
+        </td>
+
+        <td>
+          <span class="check-in-status ${
+            checkedIn ? "check-in-status-complete" : ""
+          }">
+            ${checkedIn
+              ? `Already checked in<br><small>${escapeHTML(
+                  formatDateTime(registration.checked_in_at)
+                )}</small>`
+              : "Not checked in"
+            }
           </span>
         </td>
 
@@ -509,6 +641,8 @@ function renderTable() {
               </button>
             `
           }
+
+          ${checkInButton}
 
         </td>
 
@@ -1005,6 +1139,100 @@ Please keep your registration ID safe.
 }
 
 
+/* =========================================================
+   CHECK-IN
+========================================================= */
+
+async function checkInRegistration(
+  registration
+) {
+
+  if (!isCheckInOpen()) {
+
+    showToast(
+      "Check-in opens September 13, 2026."
+    );
+
+    return;
+
+  }
+
+  const {
+    data: {
+      session
+    }
+  } = await supabase.auth.getSession();
+
+  if (!session) {
+
+    window.location.href = "/src/admin/admin.html";
+
+    return;
+
+  }
+
+  const { data, error } =
+    await supabase.rpc(
+      "check_in_registration",
+      {
+        target_registration_id:
+          registration.registration_id
+      }
+    );
+
+  if (error) {
+
+    console.error(
+      "Could not check in registration:",
+      error
+    );
+
+    showToast(
+      error.message === "Check-in is not open"
+        ? "Check-in opens September 13, 2026."
+        : "Could not check in this attendee. Try again."
+    );
+
+    return;
+
+  }
+
+  if (data?.already_checked_in) {
+
+    registration.checked_in_at =
+      data.checked_in_at || registration.checked_in_at;
+
+    renderTable();
+
+    showToast("Already checked in.");
+
+    return;
+
+  }
+
+  if (!data?.checked_in_at) {
+
+    showToast(
+      "Could not confirm the check-in. Try again."
+    );
+
+    return;
+
+  }
+
+  registration.checked_in_at =
+    data.checked_in_at;
+
+  updateStatistics();
+  renderTable();
+
+  showToast(
+    `${registration.full_name || "Attendee"} checked in ✓`
+  );
+
+}
+
+
 function closeReminderConfirmation() {
 
   pendingReminderRegistration = null;
@@ -1167,7 +1395,8 @@ function exportCSV() {
     "group_size",
     "source",
     "message",
-    "created_at"
+    "created_at",
+    "checked_in_at"
 
   ];
 
@@ -1582,6 +1811,33 @@ exportButton.addEventListener(
 );
 
 
+filterButtons.forEach(
+  (button) => {
+
+    button.addEventListener(
+      "click",
+      () => {
+
+        checkInFilter =
+          button.dataset.checkInFilter;
+
+        filterButtons.forEach(
+          (filterButton) =>
+            filterButton.classList.toggle(
+              "active",
+              filterButton === button
+            )
+        );
+
+        renderTable();
+
+      }
+    );
+
+  }
+);
+
+
 logoutButton.addEventListener(
   "click",
   logout
@@ -1766,6 +2022,39 @@ tableBody.addEventListener(
       if (registration) {
 
         openReminderWhatsApp(registration);
+
+      }
+
+    }
+
+
+    /* CHECK-IN BUTTON */
+
+    const checkInButton =
+      event.target.closest(
+        ".check-in-button"
+      );
+
+    if (checkInButton) {
+
+      if (checkInButton.disabled) {
+
+        return;
+
+      }
+
+      const id =
+        checkInButton.dataset.checkInId;
+
+      const registration =
+        registrations.find(
+          item =>
+            String(item.registration_id) === String(id)
+        );
+
+      if (registration) {
+
+        checkInRegistration(registration);
 
       }
 
