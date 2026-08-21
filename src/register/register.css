@@ -307,6 +307,16 @@ a {
   transform: none;
 }
 
+.duplicate-phone-error {
+  margin: 16px 0 0;
+
+  color: #ffb4b4;
+
+  font-size: 0.8rem;
+  line-height: 1.6;
+  text-align: center;
+}
+
 .form-note {
   text-align: center;
 
@@ -396,6 +406,7 @@ a {
 .form-section,
 .form-consent,
 .submit-button,
+.duplicate-phone-error,
 .form-note {
   will-change: transform, opacity;
 }

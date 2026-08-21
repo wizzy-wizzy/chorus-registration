@@ -10,6 +10,37 @@ import { supabase } from "../lib/supabase.js";
 const form = document.querySelector("#registration-form");
 const submitButton = document.querySelector("#submit-button");
 const buttonText = document.querySelector("#button-text");
+const duplicatePhoneError = document.querySelector("#duplicate-phone-error");
+
+function normalizeNigerianPhone(phone) {
+
+  const compactPhone = phone
+    .trim()
+    .replace(/[\s()-]/g, "");
+
+  let nationalNumber;
+
+  if (/^0[789]\d{9}$/.test(compactPhone)) {
+
+    nationalNumber = compactPhone.slice(1);
+
+  } else if (/^[789]\d{9}$/.test(compactPhone)) {
+
+    nationalNumber = compactPhone;
+
+  } else if (/^\+?234[789]\d{9}$/.test(compactPhone)) {
+
+    nationalNumber = compactPhone.slice(-10);
+
+  } else {
+
+    return null;
+
+  }
+
+  return `234${nationalNumber}`;
+
+}
 
 
 /* =========================================================
@@ -40,6 +71,8 @@ if (form) {
        LOADING STATE
     ------------------------------------------------------- */
 
+     duplicatePhoneError.hidden = true;
+
     submitButton.disabled = true;
 
     buttonText.textContent = "Registering...";
@@ -50,6 +83,22 @@ if (form) {
     ------------------------------------------------------- */
 
     const formData = new FormData(form);
+    const normalizedPhone = normalizeNigerianPhone(
+      formData.get("phone")?.toString() || ""
+    );
+
+    if (!normalizedPhone) {
+
+      duplicatePhoneError.textContent =
+        "Please enter a valid Nigerian phone number.";
+
+      duplicatePhoneError.hidden = false;
+      submitButton.disabled = false;
+      buttonText.textContent = "Complete Registration";
+
+      return;
+
+    }
 
 
     const registrationData = {
@@ -58,7 +107,7 @@ if (form) {
         formData.get("fullName")?.trim(),
 
       phone:
-        formData.get("phone")?.trim(),
+        normalizedPhone,
 
       email:
         formData.get("email")?.trim() || null,
@@ -115,6 +164,30 @@ if (form) {
       ----------------------------------------------------- */
 
       if (error) {
+
+        const isDuplicatePhoneError =
+          error.code === "23505" &&
+          /phone/i.test(
+            `${error.message || ""} ${error.details || ""} ${error.hint || ""}`
+          );
+
+        if (isDuplicatePhoneError) {
+
+          console.error(
+            "Registration failed because the phone number is already registered:",
+            error
+          );
+
+          duplicatePhoneError.textContent =
+            "You have already registered for CHORUS 2026. Please contact the CHORUS team if you need to update your details.";
+
+          duplicatePhoneError.hidden = false;
+
+          submitButton.disabled = false;
+
+          return;
+
+        }
 
         throw error;
 
