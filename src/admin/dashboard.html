@@ -179,6 +179,26 @@
 
       </article>
 
+
+      <article class="stat-card reminder-stat-card">
+
+        <span class="stat-label">
+          REMINDERS DUE
+        </span>
+
+        <strong
+          id="reminders-due"
+          class="stat-number"
+        >
+          —
+        </strong>
+
+        <span class="stat-description">
+          WhatsApp reminders ready
+        </span>
+
+      </article>
+
     </section>
 
 
@@ -274,6 +294,10 @@
               </th>
 
               <th>
+                REMINDER STATUS
+              </th>
+
+              <th>
                 ACTION
               </th>
 
@@ -287,7 +311,7 @@
             <tr>
 
               <td
-                colspan="7"
+                colspan="8"
                 class="loading-cell"
               >
                 Loading registrations...
@@ -526,6 +550,58 @@
       class="toast"
     >
       <span id="toast-message"></span>
+    </div>
+
+
+    <div
+      id="reminder-confirmation"
+      class="reminder-confirmation"
+      aria-hidden="true"
+    >
+
+      <div
+        class="reminder-confirmation-overlay"
+        id="reminder-confirmation-overlay"
+      ></div>
+
+
+      <div
+        class="reminder-confirmation-card"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="reminder-confirmation-title"
+      >
+
+        <p class="eyebrow">
+          WHATSAPP REMINDER
+        </p>
+
+        <h2 id="reminder-confirmation-title">
+          Did you send the WhatsApp reminder?
+        </h2>
+
+        <div class="reminder-confirmation-actions">
+
+          <button
+            type="button"
+            id="mark-reminded-button"
+            class="mark-reminded-button"
+          >
+            Yes, Mark as Reminded
+          </button>
+
+          <button
+            type="button"
+            id="cancel-reminder-button"
+            class="cancel-reminder-button"
+          >
+            Cancel
+          </button>
+
+        </div>
+
+      </div>
+
     </div>
 
 

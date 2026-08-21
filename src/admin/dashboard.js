@@ -46,6 +46,9 @@ const totalAttendees =
 const groupRegistrations =
   document.querySelector("#group-registrations");
 
+const remindersDue =
+  document.querySelector("#reminders-due");
+
 
 /* =========================================================
    MODAL
@@ -60,6 +63,18 @@ const modalOverlay =
 const closeModal =
   document.querySelector("#close-modal");
 
+const reminderConfirmation =
+  document.querySelector("#reminder-confirmation");
+
+const reminderConfirmationOverlay =
+  document.querySelector("#reminder-confirmation-overlay");
+
+const markRemindedButton =
+  document.querySelector("#mark-reminded-button");
+
+const cancelReminderButton =
+  document.querySelector("#cancel-reminder-button");
+
 
 /* =========================================================
    DATA
@@ -68,6 +83,8 @@ const closeModal =
 let registrations = [];
 
 let filteredRegistrations = [];
+
+let pendingReminderRegistration = null;
 
 
 /* =========================================================
@@ -106,7 +123,7 @@ async function loadRegistrations() {
 
   tableBody.innerHTML = `
     <tr>
-      <td colspan="7" class="loading-cell">
+      <td colspan="8" class="loading-cell">
         Loading registrations...
       </td>
     </tr>
@@ -165,7 +182,7 @@ async function loadRegistrations() {
 
     tableBody.innerHTML = `
       <tr>
-        <td colspan="7" class="loading-cell">
+        <td colspan="8" class="loading-cell">
           Unable to load registrations.
         </td>
       </tr>
@@ -210,6 +227,12 @@ function updateStatistics() {
         registration.attendance === "group"
     ).length;
 
+  const dueReminders =
+    registrations.filter(
+      (registration) =>
+        getReminderStatus(registration).isDue
+    ).length;
+
 
   animateNumber(
     totalRegistrations,
@@ -232,6 +255,12 @@ function updateStatistics() {
   animateNumber(
     groupRegistrations,
     groups
+  );
+
+
+  animateNumber(
+    remindersDue,
+    dueReminders
   );
 
 }
@@ -359,6 +388,9 @@ function renderTable() {
       const row =
         document.createElement("tr");
 
+      const reminderStatus =
+        getReminderStatus(registration);
+
 
       row.innerHTML = `
 
@@ -403,6 +435,16 @@ function renderTable() {
           )}
         </td>
 
+        <td>
+          <span class="reminder-status ${
+            reminderStatus.isDue
+              ? "reminder-status-due"
+              : ""
+          }">
+            ${escapeHTML(reminderStatus.label)}
+          </span>
+        </td>
+
         <td class="actions-cell">
 
           <button
@@ -442,6 +484,32 @@ function renderTable() {
               `
           }
 
+          ${registration.phone
+            ? `
+              <button
+                class="reminder-button ${
+                  reminderStatus.isDue
+                    ? "reminder-button-due"
+                    : ""
+                }"
+                data-reminder-id="${escapeHTML(
+                  registration.registration_id || ""
+                )}"
+              >
+                💬 Reminder
+              </button>
+            `
+            : `
+              <button
+                class="reminder-button reminder-disabled"
+                disabled
+                title="No WhatsApp number available"
+              >
+                💬 Reminder
+              </button>
+            `
+          }
+
         </td>
 
       `;
@@ -469,6 +537,62 @@ function renderTable() {
 
     }
   );
+
+}
+
+
+/* =========================================================
+   REMINDER STATUS
+========================================================= */
+
+function getReminderStatus(
+  registration
+) {
+
+  const referenceDate =
+    registration.last_reminded_at
+      ? new Date(registration.last_reminded_at)
+      : new Date(registration.created_at);
+
+  if (Number.isNaN(referenceDate.getTime())) {
+
+    return {
+      isDue: false,
+      label: "Reminder date unavailable"
+    };
+
+  }
+
+  const now = new Date();
+  const reminderInterval = 5 * 24 * 60 * 60 * 1000;
+  const elapsed = now.getTime() - referenceDate.getTime();
+
+  if (elapsed >= reminderInterval) {
+
+    return {
+      isDue: true,
+      label: "Reminder Due"
+    };
+
+  }
+
+  if (registration.last_reminded_at &&
+      referenceDate.toDateString() === now.toDateString()) {
+
+    return {
+      isDue: false,
+      label: "Reminded today"
+    };
+
+  }
+
+  return {
+    isDue: false,
+    label: `Next reminder in ${Math.max(
+      1,
+      Math.ceil((reminderInterval - elapsed) / (24 * 60 * 60 * 1000))
+    )} days`
+  };
 
 }
 
@@ -692,42 +816,22 @@ function normalizeNigerianPhone(
   }
 
 
-  /*
+  if (/^0[789]\d{9}$/.test(cleaned)) {
 
-    Nigerian examples:
+    cleaned = cleaned.slice(1);
 
-    08012345678
-    ↓
-    2348012345678
+  } else if (!/^[789]\d{9}$/.test(cleaned) &&
+             !/^234[789]\d{9}$/.test(cleaned)) {
 
-    8012345678
-    ↓
-    2348012345678
+    return null;
 
-    2348012345678
-    ↓
-    2348012345678
+  }
 
-  */
-
-  if (
-    cleaned.startsWith("234")
-  ) {
+  if (cleaned.startsWith("234")) {
 
     return cleaned;
 
   }
-
-
-  if (
-    cleaned.startsWith("0")
-  ) {
-
-    cleaned =
-      cleaned.slice(1);
-
-  }
-
 
   return `234${cleaned}`;
 
@@ -815,6 +919,178 @@ The CHORUS 2026 / Echoverse Team`;
     whatsappURL,
     "_blank",
     "noopener,noreferrer"
+  );
+
+}
+
+
+/* =========================================================
+   WHATSAPP REMINDERS
+========================================================= */
+
+function openReminderWhatsApp(
+  registration
+) {
+
+  const phone =
+    normalizeNigerianPhone(
+      registration.phone
+    );
+
+  if (!phone) {
+
+    showToast(
+      "This attendee does not have a valid WhatsApp number."
+    );
+
+    return;
+
+  }
+
+  const name =
+    registration.full_name ||
+    "there";
+
+  const registrationId =
+    registration.registration_id ||
+    "—";
+
+  const message =
+`Hello ${name} 👋
+
+Just a friendly reminder from the CHORUS 2026 team 🎶
+
+You registered for CHORUS 2026, happening on 13 September 2026.
+
+Registration ID: ${registrationId}
+
+We're getting closer, and we're excited to worship with you! ❤️🔥
+
+Please keep your registration ID safe.
+
+— Echoverse / CHORUS 2026`;
+
+  const whatsappURL =
+    `https://wa.me/${phone}?text=${
+      encodeURIComponent(message)
+    }`;
+
+  window.open(
+    whatsappURL,
+    "_blank",
+    "noopener,noreferrer"
+  );
+
+  pendingReminderRegistration = registration;
+
+  reminderConfirmation.classList.add("active");
+  reminderConfirmation.setAttribute("aria-hidden", "false");
+
+  gsap.fromTo(
+    ".reminder-confirmation-card",
+    {
+      opacity: 0,
+      y: 20,
+      scale: .98
+    },
+    {
+      opacity: 1,
+      y: 0,
+      scale: 1,
+      duration: .3,
+      ease: "power2.out"
+    }
+  );
+
+}
+
+
+function closeReminderConfirmation() {
+
+  pendingReminderRegistration = null;
+  reminderConfirmation.classList.remove("active");
+  reminderConfirmation.setAttribute("aria-hidden", "true");
+
+}
+
+
+async function markReminderAsSent() {
+
+  if (!pendingReminderRegistration) {
+
+    return;
+
+  }
+
+  const registration =
+    pendingReminderRegistration;
+
+  markRemindedButton.disabled = true;
+  markRemindedButton.textContent = "Saving...";
+
+  const timestamp =
+    new Date().toISOString();
+
+  let updateError;
+
+  try {
+
+    const { error } =
+      await supabase
+        .from("registrations")
+        .update({
+          last_reminded_at: timestamp
+        })
+        .eq(
+          "registration_id",
+          registration.registration_id
+        );
+
+    updateError = error;
+
+  } catch (error) {
+
+    updateError = error;
+
+  }
+
+  if (updateError) {
+
+    console.error(
+      "Could not mark reminder as sent:",
+      updateError
+    );
+
+    markRemindedButton.disabled = false;
+    markRemindedButton.textContent = "Yes, Mark as Reminded";
+
+    showToast(
+      "Could not save the reminder status. Try again."
+    );
+
+    return;
+
+  }
+
+  registration.last_reminded_at = timestamp;
+  filteredRegistrations =
+    filteredRegistrations.map(
+      (item) =>
+        String(item.registration_id) ===
+          String(registration.registration_id)
+          ? registration
+          : item
+    );
+
+  updateStatistics();
+  renderTable();
+  closeReminderConfirmation();
+
+  markRemindedButton.disabled = false;
+  markRemindedButton.textContent = "Yes, Mark as Reminded";
+
+  showToast(
+    "Reminder marked as sent ✓"
   );
 
 }
@@ -1324,6 +1600,24 @@ modalOverlay.addEventListener(
 );
 
 
+markRemindedButton.addEventListener(
+  "click",
+  markReminderAsSent
+);
+
+
+cancelReminderButton.addEventListener(
+  "click",
+  closeReminderConfirmation
+);
+
+
+reminderConfirmationOverlay.addEventListener(
+  "click",
+  closeReminderConfirmation
+);
+
+
 document.addEventListener(
   "keydown",
   (event) => {
@@ -1334,6 +1628,15 @@ document.addEventListener(
     ) {
 
       closeAttendeeModal();
+
+    }
+
+    if (
+      event.key === "Escape" &&
+      reminderConfirmation.classList.contains("active")
+    ) {
+
+      closeReminderConfirmation();
 
     }
 
@@ -1426,6 +1729,43 @@ tableBody.addEventListener(
         openWhatsApp(
           registration
         );
+
+      }
+
+    }
+
+
+    /* REMINDER BUTTON */
+
+    const reminderButton =
+      event.target.closest(
+        ".reminder-button"
+      );
+
+    if (reminderButton) {
+
+      if (reminderButton.disabled) {
+
+        showToast(
+          "No WhatsApp number is available for this attendee."
+        );
+
+        return;
+
+      }
+
+      const id =
+        reminderButton.dataset.reminderId;
+
+      const registration =
+        registrations.find(
+          item =>
+            String(item.registration_id) === String(id)
+        );
+
+      if (registration) {
+
+        openReminderWhatsApp(registration);
 
       }
 
